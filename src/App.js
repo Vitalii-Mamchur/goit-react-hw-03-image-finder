@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Loader from "react-loader-spinner";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Searchbar from "./components/Searchbar";
 import ImageGallery from "./components/ImageGallery";
+import Button from "./components/Button";
 
 class App extends Component {
   state = {
@@ -38,9 +40,17 @@ class App extends Component {
           hits: [...prevState.hits, ...res.data.hits],
           currentPage: prevState.currentPage + 1,
         }));
+        this.scrollToButton();
       })
       .catch((error) => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
+  };
+
+  scrollToButton = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
   };
 
   render() {
@@ -48,17 +58,15 @@ class App extends Component {
     const shouldRenderLoadMoreButton = hits.length > 0 && !isLoading;
     return (
       <>
-        {error && alert("Oooops")}
         <Searchbar onSubmit={this.onChangeQuery} />
+        {error && alert("Oooops")}
         <ImageGallery hits={hits} />
-        {isLoading && (
-          <Loader type="ThreeDots" color="#000000" height={80} width={80} />
-        )}
-        {shouldRenderLoadMoreButton && (
-          <button tupe="button" onClick={this.fetchHits}>
-            Load more
-          </button>
-        )}
+        <div className="Container">
+          {isLoading && (
+            <Loader type="ThreeDots" color="#000000" height={80} width={80} />
+          )}
+          {shouldRenderLoadMoreButton && <Button onFetch={this.fetchHits} />}
+        </div>
       </>
     );
   }
