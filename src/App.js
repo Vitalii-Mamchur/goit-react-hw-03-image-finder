@@ -5,6 +5,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Searchbar from "./components/Searchbar";
 import ImageGallery from "./components/ImageGallery";
 import Button from "./components/Button";
+import Modal from "./components/Modal";
 
 class App extends Component {
   state = {
@@ -13,6 +14,8 @@ class App extends Component {
     searchQuery: "",
     isLoading: false,
     error: null,
+    showModal: false,
+    currentImgObj: { largeUrl: "" },
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -53,20 +56,33 @@ class App extends Component {
     });
   };
 
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
+
   render() {
-    const { hits, isLoading, error } = this.state;
+    const { hits, isLoading, error, showModal, currentImgObj } = this.state;
     const shouldRenderLoadMoreButton = hits.length > 0 && !isLoading;
     return (
       <>
         <Searchbar onSubmit={this.onChangeQuery} />
         {error && alert("Oooops")}
-        <ImageGallery hits={hits} />
+        <ImageGallery hits={hits} onClick={this.toggleModal} />
         <div className="Container">
           {isLoading && (
             <Loader type="ThreeDots" color="#000000" height={80} width={80} />
           )}
           {shouldRenderLoadMoreButton && <Button onFetch={this.fetchHits} />}
         </div>
+        {showModal && (
+          <Modal
+            src={currentImgObj.largeUrl}
+            alt={currentImgObj.alt}
+            onClose={this.toggleModal}
+          ></Modal>
+        )}
       </>
     );
   }

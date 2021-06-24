@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "../../styles.css";
 
 class Searchbar extends Component {
-  state = { query: "" };
+  state = { query: "moto" };
 
   handleChange = (e) => {
     this.setState({ query: e.currentTarget.value });
