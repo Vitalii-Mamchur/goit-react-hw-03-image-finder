@@ -13,9 +13,9 @@ class App extends Component {
     currentPage: 1,
     searchQuery: "",
     isLoading: false,
-    error: null,
+    error: false,
     showModal: false,
-    currentImgObj: { largeUrl: "" },
+    currentImgObj: { largeUrl: "", alt: "" },
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -45,7 +45,7 @@ class App extends Component {
         }));
         this.scrollToButton();
       })
-      .catch((error) => this.setState({ error }))
+      .catch(() => this.setState({ error: true }))
       .finally(() => this.setState({ isLoading: false }));
   };
 
@@ -69,6 +69,8 @@ class App extends Component {
       <>
         <Searchbar onSubmit={this.onChangeQuery} />
         {error && alert("Oooops")}
+        {/* {error && alert (Oooops, something went wrong, try again!!!)} */}
+
         <ImageGallery hits={hits} onClick={this.toggleModal} />
         <div className="Container">
           {isLoading && (

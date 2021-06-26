@@ -1,4 +1,5 @@
 import React from "react";
+import "./ImageGalleryItems.css";
 
 const ImageGalleryItem = ({ src, alt }) => {
   return (
