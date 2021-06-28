@@ -1,12 +1,25 @@
 import React from "react";
-import "./Button.css";
+import PropTypes from "prop-types";
+import styles from "./Button.module.css";
 
 const Button = ({ onFetch }) => {
   return (
-    <button className="Button" type="button" onClick={onFetch}>
-      Load more
-    </button>
+    <div className={styles.ButtonWrapper}>
+      <button type="button" className={styles.Button} onClick={onFetch}>
+        Load more
+      </button>
+    </div>
   );
+};
+
+Button.defaultProps = {
+  onClick: () => null,
+  children: null,
+};
+
+Button.propTypes = {
+  children: PropTypes.node,
+  onClick: PropTypes.func,
 };
 
 export default Button;

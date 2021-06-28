@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import "./Searchbar.css";
+import styles from "./Searchbar.module.css";
 
 class Searchbar extends Component {
-  state = { query: "moto" };
+  state = { query: "" };
 
   handleChange = (e) => {
     this.setState({ query: e.currentTarget.value });
@@ -10,7 +10,9 @@ class Searchbar extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    //  console.log(this.state.query);
+    if (this.state.query === "") {
+      return alert("Please, enter your request");
+    }
     this.props.onSubmit(this.state.query);
     this.setState({ query: "" });
   };
@@ -18,14 +20,14 @@ class Searchbar extends Component {
   render() {
     return (
       <>
-        <header className="Searchbar">
-          <form className="SearchForm" onSubmit={this.handleSubmit}>
-            <button type="submit" className="SearchForm-button">
-              <span className="SearchForm-button-label">Search</span>
+        <header className={styles.Searchbar} onSubmit={this.handleSubmit}>
+          <form className={styles.SearchForm}>
+            <button type="submit" className={styles.SearchFormButton}>
+              <span className={styles.SearchFormButtonLabel}>Search</span>
             </button>
 
             <input
-              className="SearchForm-input"
+              className={styles.SearchFormInput}
               type="text"
               autoComplete="off"
               autoFocus

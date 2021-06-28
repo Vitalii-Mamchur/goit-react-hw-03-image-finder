@@ -1,21 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./ImageGallery.css";
+import styles from "./ImageGallery.module.css";
 import ImageGalleryItem from "../../components/ImageGalleryItem";
 
 const ImageGallery = ({ hits, onClick }) => {
   return (
-    <ul className="ImageGallery" onClick={onClick}>
-      {hits.map(({ id, tags, webformatURL, largeImageURL }) => (
-        <ImageGalleryItem
-          key={id}
-          src={webformatURL}
-          largeImage={largeImageURL}
-          alt={tags}
-        />
+    <ul className={styles.ImageGallery} onClick={onClick}>
+      {hits.map((hit) => (
+        <ImageGalleryItem key={hit.id} photo={hit} />
       ))}
     </ul>
   );
+};
+
+ImageGallery.defaultProps = {
+  hits: [],
 };
 
 ImageGallery.propTypes = {
