@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import axios from "axios";
 import "./styles.css";
+import fetchPhotosAPI from "./services/photosAPI";
 import Loader from "react-loader-spinner";
 import Searchbar from "./components/Searchbar";
 import ImageGallery from "./components/ImageGallery";
@@ -13,7 +13,7 @@ class App extends Component {
     currentPage: 1,
     searchQuery: "",
     isLoading: false,
-    error: false,
+    error: null,
     showModal: false,
     currentImgObj: { largeUrl: "", alt: "" },
   };
@@ -33,21 +33,18 @@ class App extends Component {
 
     this.setState({ isLoading: true });
 
-    axios
-      .get(
-        `https://pixabay.com/api/?q=${searchQuery}&key=19964688-39e6ce365709953a823cd9b18&image_type=photo&orientation=horizontal&per_page=12&page=${currentPage}`
-      )
-      .then((res) => {
-        if (res.hits.length === 0) {
-          this.setState({ error: true });
-        }
+    fetchPhotosAPI(searchQuery, currentPage)
+      .then(({ hits }) => {
         this.setState((prevState) => ({
-          hits: [...prevState.hits, ...res.data.hits],
+          hits: [...prevState.hits, ...hits],
           currentPage: prevState.currentPage + 1,
         }));
+        if (this.state.hits.length === 0) {
+          alert("Oooops, enter the correct request");
+        }
         this.scrollToButton();
       })
-      .catch(({ error }) => this.setState({ error: true }))
+      .catch((error) => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
   };
 
@@ -80,22 +77,17 @@ class App extends Component {
       <div>
         <Searchbar onSubmit={this.onChangeQuery} />
 
-        {error && alert("Oooops, something went wrong, try again!!!")}
+        {error && <p>Whoops, something went wrong: {error.message}</p>}
 
         {hits.length > 0 && (
           <ImageGallery hits={hits} onClick={this.handleClickGalleryItem} />
         )}
-
-        {isLoading && (
-          <Loader
-            type="ThreeDots"
-            color="#000000"
-            height={80}
-            width={80}
-            textAlign="center"
-          />
-        )}
-        {shouldRenderLoadMoreButton && <Button onFetch={this.fetchHits} />}
+        <div className="Container">
+          {isLoading && (
+            <Loader type="ThreeDots" color="#000000" height={80} width={80} />
+          )}
+          {shouldRenderLoadMoreButton && <Button onFetch={this.fetchHits} />}
+        </div>
 
         {showModal && (
           <Modal
